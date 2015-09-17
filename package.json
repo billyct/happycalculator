@@ -1,0 +1,23 @@
+{
+  "name": "happycalculator",
+  "version": "0.0.1",
+  "description": "calculator for natural formula like \"1+2+3\" for result 6",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "calculator",
+    "calculate",
+    "formula",
+    "rpn"
+  ],
+  "author": "billyct",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.2"
+  }
+}
