@@ -12,6 +12,12 @@
     "formula",
     "rpn"
   ],
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "libs/"
+  ],
   "author": "billyct",
   "license": "MIT",
   "repository": "billyct/happycalculator",
