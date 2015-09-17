@@ -1,12 +1,20 @@
 # happycalculator ![image of travis-ci](https://travis-ci.org/billyct/happycalculator.svg)
+
+![icon](./icon.png)
+
+
 一个公式计算类库，类似计算"1+2+3" = 6 
 
 [ENGLISH](./README.md)
 
 ##安装
+
+
 ``` $ npm install --save happycalculator ```
 
 ##使用
+
+
 ```
 var happycalculator = require('happycalculator');
 var formula = '20 * ( 10 + 20 ) / 20';

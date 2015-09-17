@@ -1,12 +1,19 @@
 # happycalculator ![image of travis-ci](https://travis-ci.org/billyct/happycalculator.svg)
+![icon](./icon.png)
+
+
 calculator for natural formula like "1+2+3" for result 6 
 
 [中文](https://github.com/billyct/happycalculator/blob/master/readme_zh.md)
 
 ##Install
+
+
 ``` $ npm install --save happycalculator ```
 
 ##Usage
+
+
 ```
 var happycalculator = require('happycalculator');
 var formula = '20 * ( 10 + 20 ) / 20';
