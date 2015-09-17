@@ -1,10 +1,10 @@
 {
   "name": "happycalculator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "calculator for natural formula like \"1+2+3\" for result 6",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "make test"
   },
   "keywords": [
     "calculator",
@@ -13,7 +13,8 @@
     "rpn"
   ],
   "author": "billyct",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": "billyct/happycalculator",
   "dependencies": {
     "lodash": "^3.10.1"
   },
