@@ -28,17 +28,19 @@ happycalculator.calculate(formula);
 ```
 happycalculator.calculate(sqrt(10)*20/20);
 //output 100
-var formulas = {
-	'sqrt' : '$1 + $1'
-};
-happycalculator.addFormulas(formulas);
+
+happycalculator.addFormulas({'sqrt' : '$1 + $1'});
 happycalculator.calculate(sqrt(10)*20/20);
 //output 20
-happycalculator.calculate(sqrt(10)*20/20);
+happycalculator.calculate(sqrt(sqrt(10))*20/20);
 //output 40
 happycalculator.removeFormulas();
 happycalculator.calculate(sqrt(10)*20/20);
 //output 20
+
+happycalculator.addFormulas({'custom' : '$1 + $2 +$3'});
+happycalculator.calculate(custom(10, 20, 30))
+//output 60
 ```
 
 ##API
@@ -51,9 +53,12 @@ return an array postinfx that with the [Shunting-yard Algorithm](https://en.wiki
 ###calculate(string_infix)
 return the num calculated
 
-###TODO
+###addFormulas(formulas)
+add custom formulas to the calculator,and the formula rule is looks like that{'key' => '$1+$2+$3'},key(1,2,3),default formula function has sqrt:'$1*$1' right now,its working on
+
+##TODO
 * ~~support custom calculate function like "cos() sin()..." and also what you like to custom~~
-* support for calculator formula loop with formulas
+* support for calculator formula loop with formulas,like sqrt(10+20)
 
 
 ##License

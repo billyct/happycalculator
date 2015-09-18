@@ -29,17 +29,21 @@ happycalculator.calculate(formula);
 ```
 happycalculator.calculate(sqrt(10)*20/20);
 //output 100
-var formulas = {
-	'sqrt' : '$1 + $1'
-};
-happycalculator.addFormulas(formulas);
+happycalculator.calculate(sqrt(10)*20/20);
+//output 100
+
+happycalculator.addFormulas({'sqrt' : '$1 + $1'});
 happycalculator.calculate(sqrt(10)*20/20);
 //output 20
-happycalculator.calculate(sqrt(10)*20/20);
+happycalculator.calculate(sqrt(sqrt(10))*20/20);
 //output 40
 happycalculator.removeFormulas();
 happycalculator.calculate(sqrt(10)*20/20);
 //output 20
+
+happycalculator.addFormulas({'custom' : '$1 + $2 +$3'});
+happycalculator.calculate(custom(10, 20, 30))
+//output 60
 ```
 
 ##API
@@ -52,7 +56,11 @@ happycalculator.calculate(sqrt(10)*20/20);
 ###calculate(string_infix)
 返回计算值
 
-###TODO
+###addFormulas(formulas)
+添加自定义公式函数，规则类似{'key' : '$1+$2+$3'},key(1,2,3)
+默认的公式函数暂时只有sqrt : '$1*$1',还在继续
+
+##TODO
 * ~~支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式~~
 * 支持公式函数嵌套公式，类似sqrt(10+20)，可以使用
 
