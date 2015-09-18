@@ -3,7 +3,7 @@
 ![icon](./icon.png)
 
 
-一个公式计算类库，类似计算"1+2+3" = 6 
+一个公式计算类库，类似计算"1+2+3" = 6 ,支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式
 
 [ENGLISH](./README.md)
 
@@ -13,7 +13,7 @@
 ``` $ npm install --save happycalculator ```
 
 ##使用
-
+###基本
 
 ```
 var happycalculator = require('happycalculator');
@@ -24,6 +24,22 @@ happycalculator.shunt(formula);
 //输出: [ '20', '10', '20', '+', '*', '20', '/' ]
 happycalculator.calculate(formula);
 //输出: 30
+```
+###高级
+```
+happycalculator.calculate(sqrt(10)*20/20);
+//output 100
+var formulas = {
+	'sqrt' : '$1 + $1'
+};
+happycalculator.addFormulas(formulas);
+happycalculator.calculate(sqrt(10)*20/20);
+//output 20
+happycalculator.calculate(sqrt(10)*20/20);
+//output 40
+happycalculator.removeFormulas();
+happycalculator.calculate(sqrt(10)*20/20);
+//output 20
 ```
 
 ##API
@@ -37,7 +53,8 @@ happycalculator.calculate(formula);
 返回计算值
 
 ###TODO
-* 支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式
+* ~~支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式~~
+* 支持公式函数嵌套公式，类似sqrt(10+20)，可以使用
 
 
 ##License

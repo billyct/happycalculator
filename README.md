@@ -2,7 +2,7 @@
 ![icon](./icon.png)
 
 
-calculator for natural formula like "1+2+3" for result 6 
+calculator for natural formula like "1+2+3" for result 6,support custom function like sqrt(20) also whatever you want
 
 [中文](https://github.com/billyct/happycalculator/blob/master/readme_zh.md)
 
@@ -12,7 +12,7 @@ calculator for natural formula like "1+2+3" for result 6
 ``` $ npm install --save happycalculator ```
 
 ##Usage
-
+###base
 
 ```
 var happycalculator = require('happycalculator');
@@ -23,6 +23,22 @@ happycalculator.shunt(formula);
 //output: [ '20', '10', '20', '+', '*', '20', '/' ]
 happycalculator.calculate(formula);
 //output: 30
+```
+###advance
+```
+happycalculator.calculate(sqrt(10)*20/20);
+//output 100
+var formulas = {
+	'sqrt' : '$1 + $1'
+};
+happycalculator.addFormulas(formulas);
+happycalculator.calculate(sqrt(10)*20/20);
+//output 20
+happycalculator.calculate(sqrt(10)*20/20);
+//output 40
+happycalculator.removeFormulas();
+happycalculator.calculate(sqrt(10)*20/20);
+//output 20
 ```
 
 ##API
@@ -36,7 +52,8 @@ return an array postinfx that with the [Shunting-yard Algorithm](https://en.wiki
 return the num calculated
 
 ###TODO
-* support custom calculate function like "cos() sin()..." and also what you like to custom
+* ~~support custom calculate function like "cos() sin()..." and also what you like to custom~~
+* support for calculator formula loop with formulas
 
 
 ##License

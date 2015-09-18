@@ -3,6 +3,7 @@
 "use strict";
 
 var _ = require('lodash');
+var calculator_formulas = require('./calculator_formulas');
 
 /****
  * calculator 1.转化字符串成数组
@@ -15,6 +16,12 @@ var _ = require('lodash');
  *      calculate(str) return int
  */
 var Calculator = {
+
+  /**
+   * 存储公式函数，初始化的公式函数在 calculator_formulas.js
+   */
+  formulas : _.clone(calculator_formulas),
+
 
   /**
    * 配置的运算符
@@ -86,7 +93,7 @@ var Calculator = {
         /**
          * @TODO 这里将把变量等等等等都变成数字，如果是NAN，那就悲剧的吧，哈哈!
          **/
-        outputStack.push(global.parseInt(cur));
+        outputStack.push(_.parseInt(cur));
       } else {
         if (outputStack.length < 2) {
           throw 'unvalid stack length';
@@ -230,25 +237,85 @@ var Calculator = {
   },
 
   /**
+   * 解析公式函数
+   * @param item
+   * @returns {string/array}
+   */
+  fixFormulas: function(item) {
+    var indexOfBracketPre = _.indexOf(item, '('),
+      indexOfBracketPost = _.lastIndexOf(item, ')'),
+      result = item,
+      args, reg, i;
+
+    if (indexOfBracketPre !== -1 && indexOfBracketPost !== -1) {
+      //表示是一个公式函数
+      //公式函数规则 example: "sqrt(2)",字母加上一个括号
+      (function(_this) {
+
+        return _.forIn(_this.formulas, function (formulaValue, formulaKey) {
+          formulaValue = formulaValue.replace(/\s+/g, '');
+          //需要判断这个key是开始位置开始的，还有这个item到(为止的前面跟key是相等的
+          if (item.indexOf(formulaKey) === 0 &&
+            item.substr(0, indexOfBracketPre) === formulaKey) {
+            //匹配公式规则
+            args = item.substring(indexOfBracketPre + 1, indexOfBracketPost);
+            args = args.split(',');
+            for (i = 0; i < args.length; i++) {
+              //函数的定义格式是$1为第一个参数,$2为第二个参数以此类推
+              reg = new RegExp('\\$' + (i + 1), 'g');
+              //这里优先级可能会有问题，所以得加一个括号，这个如果是无用的括号，在后面的convert中会消除掉
+              formulaValue = formulaValue.replace(reg, '(' + args[i] + ')');
+
+            }
+
+
+            //这个生成的解析后的函数表达式，也是一个表达式，可能也包括括号，所以需要convert
+            formulaValue = _this.convert(formulaValue);
+
+            formulaValue.unshift('(');
+            formulaValue.push(')');
+
+            result = formulaValue;
+          }
+        });
+
+      }(this));
+    }
+
+
+    return result;
+
+  },
+
+  /**
    * 将字符串转化成数组
    * @param infix
    * @returns {Array}
    */
   convert: function(infix) {
     infix = infix.replace(/\s+/g, ''); // remove spaces, so infix[i]!=" "
+    //TODO 这里无法支持嵌套公式的方法，或者说应该是有优先级的进行，先进行fixFunction，再进行convert，
+    //TODO 如果是这样那么就不需要类似现在的写法，有点fixFunction和convert循环引用的，不过毕竟都是肯定有限的，所以不必担心
     var infixArray = infix.split(/[\+\-\*\/]+/), //先把字符串里面的数据和符号区分开！没有运算符的数组
       result = [],
+      temp = [],
       flag = 0,
       i;
     for (i = 0; i < infixArray.length; i++) {
       //把括号修复一下，就是之前的切割会出来类似((cos(20)的字符串，其实应该是"(,(,(cos(20)"
-      result = result.concat(this.fixBrackets(infixArray[i]));
+      temp = temp.concat(this.fixBrackets(infixArray[i]));
       //把运算符添加进去
       flag += flag === 0 ? infixArray[i].length : infixArray[i].length + 1;
       if (!_.isUndefined(infix[flag])) {
-        result.push(infix[flag]);
+        temp.push(infix[flag]);
       }
     }
+
+    for (i = 0; i < temp.length; i++) {
+      //需要解析公式函数，等到一个完整的表达式
+      result = result.concat(this.fixFormulas(temp[i]));
+    }
+
 
     return result;
   },
@@ -328,7 +395,24 @@ var Calculator = {
     }
     return postfixArray;
 
+  },
+
+  /**
+   * 添加公式函数
+   * @param formulas
+   */
+  addFormulas : function(formulas) {
+   this.formulas = _.assign(this.formulas, formulas);
+  },
+
+  /**
+   * 删除扩展的公式函数，改变为初始化时候的公式函数
+   */
+  removeFormulas : function() {
+    this.formulas = _.clone(calculator_formulas);
   }
+
+
 };
 
 
