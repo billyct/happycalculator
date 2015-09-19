@@ -90,13 +90,14 @@ var Calculator = {
     while(postfixArray.length > 0) {
       cur = postfixArray.shift();
       if (!this.isOperator(cur)) {
-        /**
-         * @TODO 这里将把变量等等等等都变成数字，如果是NAN，那就悲剧的吧，哈哈!
-         **/
-        outputStack.push(_.parseInt(cur));
+        cur = _.parseInt(cur);
+        if (_.isNaN(cur)) {
+          throw new Error("unvalid expression");
+        }
+        outputStack.push(cur);
       } else {
         if (outputStack.length < 2) {
-          throw 'unvalid stack length';
+          throw new Error('unvalid stack length');
         }
         sec = outputStack.pop();
         fir = outputStack.pop();
@@ -104,7 +105,7 @@ var Calculator = {
       }
     }
     if (outputStack.length !== 1) {
-      throw "unvalid expression";
+      throw new Error("unvalid expression");
     }
     return outputStack[0];
   },
@@ -202,7 +203,7 @@ var Calculator = {
         }
       } else {
         //如果没有(
-        result = result.concat(preFixedItem.substr(0, preFixedItem.length - 1));
+        result = result.concat(this.fixBracketsPost(preFixedItem.substr(0, preFixedItem.length - 1)));
         result = result.concat(preFixedItem.substr(preFixedItem.length - 1));
       }
     } else {
@@ -223,7 +224,7 @@ var Calculator = {
       i;
 
     result = result.concat(this.fixBracketsPost(preFixedItem));
-    //需要把前面的括号和后面的括号中和掉，比如"(,(,cos(29),),),)"应该是"cos(29),)"
+    // 需要把前面的括号和后面的括号中和掉，比如"(,(,cos(29),),),)"应该是"cos(29),)"
     for (i = 0; i < result.length; i++) {
       if (_.first(result) === '(' && _.last(result) === ')') {
         result.shift();
@@ -268,7 +269,6 @@ var Calculator = {
 
             }
 
-
             //这个生成的解析后的函数表达式，也是一个表达式，可能也包括括号，所以需要convert
             formulaValue = _this.convert(formulaValue);
 
@@ -282,8 +282,84 @@ var Calculator = {
       }(this));
     }
 
+    return result;
+
+  },
+
+
+  /**
+   * 修复如果在公式函数里面还有公式的话
+   * @param result
+   * @returns {array}
+   */
+  fixFormulasLoop : function(result) {
+
+    var countBracketsPre = 0,//括号的数量
+      countBracketsPost = 0,
+      // 操作
+      flag = 0, //如果是1表示已经进入函数范围，0则不是
+      temp = '',
+      replaces = [], //存储需要替换的下标和替换内容
+      pullAts = [], //下标后面到结束的一些下标
+      start = 0,
+      //
+      i, reg;
+
+    for (i = 0; i < result.length; i++) {
+
+      if(flag === 1) {
+
+        if('(' === result[i]) {
+          countBracketsPre++;
+        }
+        if(')' === result[i]) {
+          countBracketsPost++;
+        }
+
+        pullAts.push(i);
+
+        //加入之前的string，然后删除自己
+        temp += result[i];
+
+        if(countBracketsPre === countBracketsPost) {
+
+          replaces.push({
+            start : start,
+            formula : temp
+          });
+          //重新初始化一下
+          temp = '';
+          flag = 0;
+          countBracketsPre = 0;
+          countBracketsPost = 0;
+          //start = 0;
+          //length = 0;
+        }
+      } else {
+
+        reg = new RegExp(/^\w+\(/);
+
+        if(reg.test(result[i]) &&
+          _.last(result[i]) !== ')' &&
+          this.countMatches(result[i], '(') !== this.countMatches(result[i], ')')) {
+          //如果是"word("开头的，我们就认定为是一个公式函数的开头，还有不能以)结束，
+          flag = 1;
+          countBracketsPre = this.countMatches(result[i], '(');
+          temp += result[i];
+          start = i;
+        }
+      }
+    }
+
+    for(i = 0; i < replaces.length; i++) {
+      result[replaces[i].start] = replaces[i].formula;
+    }
+
+    _.pullAt(result, pullAts);
+
 
     return result;
+
 
   },
 
@@ -294,8 +370,6 @@ var Calculator = {
    */
   convert: function(infix) {
     infix = infix.replace(/\s+/g, ''); // remove spaces, so infix[i]!=" "
-    //TODO 这里无法支持嵌套公式的方法，或者说应该是有优先级的进行，先进行fixFunction，再进行convert，
-    //TODO 如果是这样那么就不需要类似现在的写法，有点fixFunction和convert循环引用的，不过毕竟都是肯定有限的，所以不必担心
     var infixArray = infix.split(/[\+\-\*\/]+/), //先把字符串里面的数据和符号区分开！没有运算符的数组
       result = [],
       temp = [],
@@ -310,6 +384,8 @@ var Calculator = {
         temp.push(infix[flag]);
       }
     }
+
+    temp = this.fixFormulasLoop(_.clone(temp));
 
     for (i = 0; i < temp.length; i++) {
       //需要解析公式函数，等到一个完整的表达式

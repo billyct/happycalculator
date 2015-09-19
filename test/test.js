@@ -21,6 +21,11 @@ describe('calculator', function () {
       var test_data = '20)';
       assert.deepEqual(['20', ')'], calculator.fixBracketsPost(test_data));
     });
+
+    it("20)) should return 20, ), )", function () {
+      var test_data = '20))';
+      assert.deepEqual(['20', ')', ')'], calculator.fixBracketsPost(test_data));
+    });
   });
 
 
@@ -56,7 +61,7 @@ describe('calculator', function () {
       assert.deepEqual(['(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')'], calculator.fixFormulas(test_data));
     });
 
-    it("sqrt(20) should return", function() {
+    it("sqrt(20) should return ['(', '20', '+', '20', ')']", function() {
       calculator.addFormulas({
         'sqrt': '$1 + $1'
       });
@@ -64,7 +69,7 @@ describe('calculator', function () {
       assert.deepEqual(['(', '20', '+', '20', ')'], calculator.fixFormulas(test_data));
     });
 
-    it("custom(20, 10) should return", function() {
+    it("custom(20, 10) should return ['(', '20', '+', '10', ')']", function() {
       calculator.addFormulas({
         'custom': '$1 + $2'
       });
@@ -73,6 +78,26 @@ describe('calculator', function () {
     });
 
 
+  });
+
+  describe('fixFormulasLoop', function() {
+    it("[ 'sqrt(sqrt(2', ')', ')' ] should return ['sqrt(sqrt(2))']", function() {
+      var test_data = [ 'sqrt(sqrt(2', ')', ')' ];
+      assert.deepEqual(['sqrt(sqrt(2))'], calculator.fixFormulasLoop(test_data));
+    });
+    it("[ 'sqrt(2', '+', '2', ')' ] should return ['sqrt(2+2)']", function() {
+      var test_data = [ 'sqrt(2', '+', '2', ')' ];
+      assert.deepEqual(['sqrt(2+2)'], calculator.fixFormulasLoop(test_data));
+    });
+    it("[ 'sqrt(sqrt(2', '+', '2', ')', ')' ] should return ['sqrt(sqrt(2+2))']", function() {
+      var test_data = [ 'sqrt(sqrt(2', '+', '2', ')', ')' ];
+      assert.deepEqual(['sqrt(sqrt(2+2))'], calculator.fixFormulasLoop(test_data));
+    });
+
+    it("[ 'sqrt(sqrt(2', '+', '2', ')', ')' ] should return ['sqrt(sqrt(sqrt(2+2)))']", function() {
+      var test_data = [ 'sqrt(sqrt(sqrt(2', '+', '2', ')', ')', ')' ];
+      assert.deepEqual(['sqrt(sqrt(sqrt(2+2)))'], calculator.fixFormulasLoop(test_data));
+    });
   });
 
 
@@ -88,15 +113,21 @@ describe('calculator', function () {
     });
 
 
-    //it("20 * ( 10 + 20 ) / sqrt(20 + 20) should return", function() {
-    //  var test_data = '20 * ( 10 + 20 ) / sqrt(20 + 20)';
-    //  assert.deepEqual(['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')'], calculator.convert(test_data));
-    //});
+    it("20 * ( 10 + 20 ) / sqrt(20 + 20) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')']", function() {
+      var test_data = '20 * ( 10 + 20 ) / sqrt(20 + 20)';
+      assert.deepEqual(['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')'], calculator.convert(test_data));
+    });
 
 
     it("20 * ( 10 + 20 ) / sqrt(sqrt(20)) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']", function() {
       var test_data = '20 * ( 10 + 20 ) / sqrt(sqrt(20))';
       assert.deepEqual(['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')'], calculator.convert(test_data));
+    });
+
+    it("sqrt(sqrt(20+20)) should return right", function() {
+      var test_data = 'sqrt(sqrt(20+20))';
+      //((((20+20)*(20+20)))*(((20+20)*(20+20))))
+      assert.deepEqual(['(', '(', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')', ')', '*', '(', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')', ')', ')'], calculator.convert(test_data));
     });
   });
 
@@ -114,6 +145,32 @@ describe('calculator', function () {
       assert.equal(30, calculator.calculate(test_data));
     });
 
+    it("sqrt(sqrt(20)) should return 160000", function() {
+      var test_data = 'sqrt(sqrt(20))';
+      assert.equal(160000, calculator.calculate(test_data));
+    });
+
+
+    it("sqrt(20+20) should return 1600", function() {
+      var test_data = 'sqrt(20+20)';
+      assert.equal(1600, calculator.calculate(test_data));
+    });
+
+
+    it("sqrt(20+20) + sqrt(20+20) should return 3200", function() {
+      var test_data = 'sqrt(20+20) + sqrt(20+20)';
+      assert.equal(3200, calculator.calculate(test_data));
+    });
+
+    it("sqrt(sqrt(2+2)) should return 256", function() {
+      var test_data = 'sqrt(sqrt(2+2))';
+      assert.equal(256, calculator.calculate(test_data));
+    });
+
+    it("custom(sqrt(2+2)) should throw error", function() {
+      var test_data = 'custom(2+2)';
+      assert.throws(function(){calculator.calculate(test_data);}, Error, 'unvalid expression');
+    });
   });
 
 

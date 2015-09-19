@@ -3,7 +3,7 @@
 ![icon](./icon.png)
 
 
-一个公式计算类库，类似计算"1+2+3" = 6 ,支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式
+一个公式计算类库，类似计算"1+2+3" = 6 ,支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式,支持公式嵌套例如sqrt(sqrt(20+20))
 
 [ENGLISH](./README.md)
 
@@ -15,7 +15,7 @@
 ##使用
 ###基本
 
-```
+```js
 var happycalculator = require('happycalculator');
 var formula = '20 * ( 10 + 20 ) / 20';
 happycalculator.convert(formula);
@@ -26,7 +26,7 @@ happycalculator.calculate(formula);
 //输出: 30
 ```
 ###高级
-```
+```js
 happycalculator.calculate(sqrt(10)*20/20);
 //output 100
 happycalculator.calculate(sqrt(10)*20/20);
@@ -44,6 +44,13 @@ happycalculator.calculate(sqrt(10)*20/20);
 happycalculator.addFormulas({'custom' : '$1 + $2 +$3'});
 happycalculator.calculate(custom(10, 20, 30))
 //output 60
+happycalculator.removeFormulas();
+
+//support formulas loop
+happycalculator.calculate(sqrt(sqrt(10)));
+//output 10000
+happycalculator.calculate(sqrt(sqrt(2+2)));
+//output 256
 ```
 
 ##API
@@ -60,9 +67,9 @@ happycalculator.calculate(custom(10, 20, 30))
 添加自定义公式函数，规则类似{'key' : '$1+$2+$3'},key(1,2,3)
 默认的公式函数暂时只有sqrt : '$1*$1',还在继续
 
-##TODO
-* ~~支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式~~
-* 支持公式函数嵌套公式，类似sqrt(10+20)，可以使用
+###removeFormulas()
+删除所有自定义公式函数，然后你的公式将仅仅支持默认的公式函数
+
 
 
 ##License

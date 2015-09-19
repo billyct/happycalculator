@@ -1,6 +1,6 @@
 {
   "name": "happycalculator",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "calculator for natural formula like \"1+2+3\" for result 6, support custom function like sqrt(20) also whatever you want",
   "main": "index.js",
   "scripts": {
