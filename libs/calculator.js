@@ -54,7 +54,7 @@ var Calculator = {
    * @returns {*}
    * @private
    */
-  __calculate : function(fir, sec, cur) {
+  __result : function(fir, sec, cur) {
     var result;
     switch(cur) {
       case '+' :
@@ -81,6 +81,7 @@ var Calculator = {
    * 计算后缀法的公式,并返回整个计算结果
    * @param infix
    * @returns {number}
+   * @private
    */
   calculate : function(infix) {
     var postfixArray = this.shunt(infix),
@@ -101,7 +102,7 @@ var Calculator = {
         }
         sec = outputStack.pop();
         fir = outputStack.pop();
-        outputStack.push(this.__calculate(fir, sec, cur));
+        outputStack.push(this.__result(fir, sec, cur));
       }
     }
     if (outputStack.length !== 1) {
@@ -109,6 +110,8 @@ var Calculator = {
     }
     return outputStack[0];
   },
+
+
 
 
 
@@ -392,7 +395,6 @@ var Calculator = {
       result = result.concat(this.fixFormulas(temp[i]));
     }
 
-
     return result;
   },
 
@@ -486,11 +488,131 @@ var Calculator = {
    */
   removeFormulas : function() {
     this.formulas = _.clone(calculator_formulas);
+  },
+
+
+  /**
+   * 返回计算的结果，是一个数组，因为代码可能有多个返回的。
+   * @param code
+   * @return {Array}
+   */
+  calculateCode : function(code) {
+    var infixs = this.parse(code);
+    return (function(_this){
+      return _.map(infixs, function(infix) {
+        return _this.calculate(infix);
+      });
+    }(this));
+  },
+
+  /**
+   * 理想状态下的happycalculator 简单代码 编译器
+   * calculator.parse('xyz=$1+$2; a=6; b=7; xyz(a,b)+b') 应该返回(6+7)+7;
+   * calculator.calculate('xyz=$1+$2; a=6; b=7; xyz(a,b)+b') 应该返回19;
+   * @param code
+   * @return {Array}
+   */
+  parse : function(code) {
+    /***
+     * 应该生成这样的对象数组， 这样做的目的是为了覆盖变量，不然无法覆盖变量
+     * [
+     * {
+     *  print: [],
+     *  expressions: [],
+     * }
+     * ]
+     */
+
+    var codings = [],
+      result = [],
+      temp, i, print;
+
+    code = code.replace(/\s+/g, '');
+    code = code.split(';');
+    code = _.compact(code);
+
+
+    //先弄出到底有多少个输出的
+    for(i = 0; i < code.length; i++) {
+      if(code[i].indexOf('=') === -1) {
+        codings.push({
+          print : '',
+          expressions: []
+        });
+      }
+    }
+
+
+    //将字符串分类，分成表达式的代码，和应该返回结果的代码，
+    temp = 0;
+    for(i = 0; i < code.length; i++) {
+      if(code[i].indexOf('=') === -1) {
+        codings[temp].print = code[i];
+        temp++;
+      } else {
+        codings[temp].expressions.push(code[i]);
+      }
+    }
+
+
+
+
+    (function(_this) {
+      _.map(codings, function(data) {
+
+        data.variables = {};
+
+        //表达式变成json格式的object
+        //先将expression是公式的加入到formulas
+        _.forEach(data.expressions, function(expression) {
+
+          if(_this.countMatches(expression, '=') > 1) {
+            throw new Error("error code");
+          }
+          expression = expression.split('=');
+          if(_.chain(expression[1]).parseInt().isNaN().value()) {
+
+            temp = {};
+            temp[expression[0]] = expression[1];
+            //将公式函数添加到公式函数集合中
+            _this.addFormulas(temp);
+
+          } else {
+            data.variables[expression[0]] = expression[1];
+          }
+
+        });
+
+        return data;
+
+      });
+    }(this));
+
+    //将expressions做一个覆盖
+    for(i = 1; i < codings.length; i++) {
+      codings[i].variables = _.assign(_.clone(codings[i-1].variables), codings[i].variables);
+    }
+
+
+    (function(_this) {
+
+      _.forEach(codings, function(data) {
+        print = _this.convert(data.print);
+        //将data的数据中的变量替换掉
+        result.push(_.map(print, function(p) {
+          return _.isUndefined(data.variables[p]) ? p : data.variables[p];
+        }).join(''));
+
+      });
+
+
+    }(this));
+
+    this.removeFormulas();
+
+    return result;
   }
 
-
 };
-
-
 
 module.exports = Calculator;

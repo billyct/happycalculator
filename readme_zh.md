@@ -3,7 +3,9 @@
 ![icon](./icon.png)
 
 
-一个公式计算类库，类似计算"1+2+3" = 6 ,支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式,支持公式嵌套例如sqrt(sqrt(20+20))
+一个公式计算类库，类似计算"1+2+3" = 6 ,支持自定义的函数公式类似 "cos() sin()..." 或者那些你想用的任何函数公式,支持公式嵌套例如sqrt(sqrt(20+20)),
+
+
 
 [ENGLISH](./README.md)
 
@@ -53,6 +55,21 @@ happycalculator.calculate(sqrt(sqrt(2+2)));
 //output 256
 ```
 
+####支持简单的编程方式的运算
+```js
+var code = `sum = $1 + $2;
+a = 2;
+b = 3;
+sum(a,b)+a;
+a = 3;
+a+b;`
+calculator.parse(code);
+//output ['(2+3)+2', '3+3']
+calculator.calculateCode(code);
+//output [7, 6]
+```
+这就是这个简单编程方式的所有
+
 ##API
 ###convert(string_infix)
 返回一个被运算符(+-*/)切割了的数组,当然"("也是有所处理的，(example:a,ab,cos(20)) 这些都是可以的
@@ -69,6 +86,14 @@ happycalculator.calculate(sqrt(sqrt(2+2)));
 
 ###removeFormulas()
 删除所有自定义公式函数，然后你的公式将仅仅支持默认的公式函数
+
+###parse(string_code)
+返回string_code表达的公式的数组
+
+###calculateCode(string_code)
+返回解析了简单的编程的字符串后的公式的运算结果的数组
+
+
 
 
 

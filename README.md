@@ -4,6 +4,8 @@
 
 calculator for natural formula like "1+2+3" for result 6,support custom function like sqrt(20) also whatever you want,support formulas loop,  like sqrt(sqrt(20+20))
 
+
+
 [中文](https://github.com/billyct/happycalculator/blob/master/readme_zh.md)
 
 ##Install
@@ -49,6 +51,21 @@ happycalculator.calculate(sqrt(sqrt(2+2)));
 //output 256
 ```
 
+####support simple code
+```js
+var code = `sum = $1 + $2;
+a = 2;
+b = 3;
+sum(a,b)+a;
+a = 3;
+a+b;`
+calculator.parse(code);
+//output ['(2+3)+2', '3+3']
+calculator.calculateCode(code);
+//output [7, 6]
+```
+and that's all simple code support right now
+
 ##API
 ###convert(string_infix)
 return an array that split with "+-*/",and if the string with values(example:a,ab,cos(20)) also that will be ok
@@ -64,6 +81,13 @@ add custom formulas to the calculator,and the formula rule is looks like that{'k
 
 ###removeFormulas()
 remove all custom formulas you add in and defaults to the default project supported formulas
+
+###parse(string_code)
+return array of string_code parsed
+
+
+###calculateCode(string_code)
+return array of the result calculated by the string_code parsed 
 
 
 

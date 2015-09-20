@@ -174,5 +174,35 @@ describe('calculator', function () {
   });
 
 
+  describe('parse', function() {
+
+    it("a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab should return ['(3+4)*3']", function() {
+      var test_data = 'a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab';
+      assert.deepEqual(['(3+4)*3'], calculator.parse(test_data));
+    });
+
+    it("a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab; ab = 4; ab+ab should return ['(3+4)*3', '4+4']", function() {
+      var test_data = 'a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab; ab = 4; ab+ab';
+      assert.deepEqual(['(3+4)*3', '4+4'], calculator.parse(test_data));
+    });
+
+  });
+
+
+  describe('calculateCode', function() {
+
+    it("a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab should return [21]", function() {
+      var test_data = 'a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab';
+      assert.deepEqual([21], calculator.calculateCode(test_data));
+    });
+
+    it("a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab; ab = 4; ab+ab should return [21, 8]", function() {
+      var test_data = 'a=$1 + $2; ab = 3; abc = 4; a(ab,abc)*ab; ab = 4; ab+ab';
+      assert.deepEqual([21, 8], calculator.calculateCode(test_data));
+    });
+
+  });
+
+
 
 });
