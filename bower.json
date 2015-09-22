@@ -1,0 +1,23 @@
+{
+  "name": "happycalculator",
+  "main": "index.js",
+  "version": "1.2.0",
+  "homepage": "https://github.com/billyct/happycalculator",
+  "authors": [
+    "billyct <billy_allen@126.com>"
+  ],
+  "description": "calculator for natural formula like \\\"1+2+3\\\" for result 6, support custom function like sqrt(20) also whatever you want",
+  "keywords": [
+    "calculator",
+    "calculate",
+    "rpn"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
