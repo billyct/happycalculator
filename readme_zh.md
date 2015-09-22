@@ -14,6 +14,12 @@
 
 ``` $ npm install --save happycalculator ```
 
+
+或者 bower
+
+
+``` $ bower install --save happycalculator ``` 然后happycalculator是全局变量
+
 ##使用
 ###基本
 

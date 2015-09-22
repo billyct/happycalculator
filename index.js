@@ -1,2 +1,2 @@
-var calculator = require('./libs/calculator');
-module.exports = calculator;
+var happycalculator = require('./libs/calculator');
+module.exports = happycalculator;

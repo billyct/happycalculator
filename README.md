@@ -13,6 +13,12 @@ calculator for natural formula like "1+2+3" for result 6,support custom function
 
 ``` $ npm install --save happycalculator ```
 
+
+or bower
+
+
+``` $ bower install --save happycalculator ``` and it will apply happycalculator global to you
+
 ##Usage
 ###base
 
