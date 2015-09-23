@@ -653,10 +653,14 @@ var Calculator = {
 if ( typeof module === "object" && module && typeof module.exports === "object" ) {
   module.exports = Calculator;
 } else {
-  window.happycalculator = Calculator;
 
-  if ( window === undefined ) {
+
+  if ( self.document === undefined ) {
+    //in WebWorker
+    //http://stackoverflow.com/questions/7931182/reliably-detect-if-the-script-is-executing-in-a-web-worker
     self.happycalculator = Calculator;
+  } else {
+    window.happycalculator = Calculator;
   }
 
   if ( typeof define === "function" && define.amd ) {
