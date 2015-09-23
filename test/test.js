@@ -1,5 +1,8 @@
-var expect = require('chai').expect;
-var happycalculator = require('../libs/calculator');
+if ( typeof module === "object" && module && typeof module.exports === "object" ) {
+  var expect = require('chai').expect;
+  var happycalculator = require('../src/happycalculator');
+}
+
 
 
 describe('calculator', function () {

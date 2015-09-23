@@ -1,9 +1,22 @@
 /*jslint node: true */
 /*jslint todo: true */
+/*global self, define*/
 "use strict";
 
-var _ = require('lodash');
-var calculator_formulas = require('./calculator_formulas');
+if ( typeof module === "object" && module && typeof module.exports === "object" ) {
+  var _ = require('lodash');
+}
+
+
+/**
+ * //函数的定义格式是$1为第一个参数,$2为第二个参数以此类推
+ * key 为函数名,理论上当然支持中文
+ * @type {object}
+ */
+var Formulas = {
+  'sqrt' : '$1 * $1',
+  'add' : '$1 + $2'
+};
 
 /****
  * calculator 1.转化字符串成数组
@@ -20,7 +33,7 @@ var Calculator = {
   /**
    * 存储公式函数，初始化的公式函数在 calculator_formulas.js
    */
-  formulas : _.clone(calculator_formulas),
+  formulas : _.clone(Formulas),
 
 
   /**
@@ -509,7 +522,7 @@ var Calculator = {
    * 删除扩展的公式函数，改变为初始化时候的公式函数
    */
   removeFormulas : function() {
-    this.formulas = _.clone(calculator_formulas);
+    this.formulas = _.clone(Formulas);
   },
 
 
@@ -637,4 +650,17 @@ var Calculator = {
 
 };
 
-module.exports = Calculator;
+if ( typeof module === "object" && module && typeof module.exports === "object" ) {
+  module.exports = Calculator;
+} else {
+  window.happycalculator = Calculator;
+
+  if ( window === undefined ) {
+    self.happycalculator = Calculator;
+  }
+
+  if ( typeof define === "function" && define.amd ) {
+    define( "happycalculator", ['lodash'], function () { return Calculator; } );
+  }
+}
+
