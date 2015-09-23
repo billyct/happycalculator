@@ -4,7 +4,8 @@
  * @type {object}
  */
 var formulas = {
-  'sqrt' : '$1 * $1'
+  'sqrt' : '$1 * $1',
+  'add' : '$1 + $2'
 };
 
 module.exports = formulas;

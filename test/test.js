@@ -219,6 +219,11 @@ describe('calculator', function () {
       expect(happycalculator.calculateCode(test_data)).to.deep.equal([21, 8]);
     });
 
+    it("a=$1 + $2; a(a(5,6), a(5,6)) should return [22]", function() {
+      var test_data = 'a=$1 + $2; a(a(5,6), a(5,6))';
+      expect(happycalculator.calculateCode(test_data)).to.deep.equal([22]);
+    });
+
   });
 
 });

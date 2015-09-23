@@ -264,6 +264,8 @@ var Calculator = {
             //匹配公式规则
             args = item.substring(indexOfBracketPre + 1, indexOfBracketPost);
             args = args.split(',');
+            //fixFormulasFunction
+            args = _this.fixFormulasLoop(_.clone(args), true);
             for (i = 0; i < args.length; i++) {
               //函数的定义格式是$1为第一个参数,$2为第二个参数以此类推
               reg = new RegExp('\\$' + (i + 1), 'g');
@@ -290,12 +292,14 @@ var Calculator = {
   },
 
 
+
+
   /**
-   * 修复如果在公式函数里面还有公式的话
-   * @param result
+   * 修复如果在公式函数里面还有公式的话, 也可以修复类似add(add(1,2), add(1,2))，这样的字符串
+   * @param result, inner
    * @returns {array}
    */
-  fixFormulasLoop : function(result) {
+  fixFormulasLoop : function(result, inner) {
 
     var countBracketsPre = 0,//括号的数量
       countBracketsPost = 0,
@@ -308,21 +312,39 @@ var Calculator = {
       //
       i, reg;
 
+    if(_.isUndefined(inner)) {
+      inner = false;
+    }
+
     for (i = 0; i < result.length; i++) {
 
       if(flag === 1) {
 
-        if('(' === result[i]) {
-          countBracketsPre++;
-        }
-        if(')' === result[i]) {
-          countBracketsPost++;
+        if(inner) {
+          if(result[i].indexOf('(') !== -1) {
+            countBracketsPre += this.countMatches(result[i], '(');
+          }
+
+          if(result[i].indexOf(')') !== -1) {
+            countBracketsPost += this.countMatches(result[i], ')');
+          }
+
+          //加入之前的string，然后删除自己
+          temp += ',' + result[i];
+        } else {
+          if('(' === result[i]) {
+            countBracketsPre++;
+          }
+          if(')' === result[i]) {
+            countBracketsPost++;
+          }
+
+          //加入之前的string，然后删除自己
+          temp += result[i];
         }
 
         pullAts.push(i);
 
-        //加入之前的string，然后删除自己
-        temp += result[i];
 
         if(countBracketsPre === countBracketsPost) {
 
