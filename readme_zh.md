@@ -1,4 +1,4 @@
-# happycalculator ![image of travis-ci](https://travis-ci.org/billyct/happycalculator.svg)
+# happycalculator [![Build Status](https://travis-ci.org/billyct/happycalculator.svg?branch=v1.3.0)](https://travis-ci.org/billyct/happycalculator)
 
 ![icon](./icon.png)
 
