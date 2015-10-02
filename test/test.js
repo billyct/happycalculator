@@ -1,6 +1,6 @@
 if ( typeof module === "object" && module && typeof module.exports === "object" ) {
   var expect = require('chai').expect;
-  var happycalculator = require('../src/happycalculator');
+  var happycalculator = require('../index');
 }
 
 
