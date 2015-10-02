@@ -16,7 +16,7 @@
     "LICENSE",
     "README.md",
     "index.js",
-    "libs/"
+    "src/"
   ],
   "author": "billyct",
   "license": "MIT",
