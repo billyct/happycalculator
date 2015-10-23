@@ -173,7 +173,6 @@ describe('calculator', function () {
     it("20 * ( 10 + 20 ) / 20 should return 30", function() {
       var test_data = '20 * ( 10 + 20 ) / 20';
       expect(happycalculator.calculate(test_data)).to.equal(30);
-
     });
 
     it("20.1+1 should return 21.1", function() {
@@ -222,6 +221,14 @@ describe('calculator', function () {
       var test_data = '20+';
       expect(function(){happycalculator.calculate(test_data);}).to.throw(Error, 'error formula to convert please!');
     });
+
+
+    it("0.1+0.2 should return 0.3", function() {
+      var test_data = '0.1+0.2';
+      expect(happycalculator.calculate(test_data)).to.equal(0.3);
+    });
+
+
   });
 
 
