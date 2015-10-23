@@ -84,6 +84,14 @@ describe('calculator', function () {
 
     });
 
+    it("when add 'happy cal' : $1 + $2 shoud return [happy_cal]", function() {
+      happycalculator.addFormulas({
+        'happy cal': '$1 + $2'
+      });
+      var test_data = 'happy_cal(20, 10)';
+      expect(happycalculator.fixFormulas(test_data)).to.deep.equal(['(', '20', '+', '10', ')']);
+    });
+
 
   });
 
@@ -111,6 +119,12 @@ describe('calculator', function () {
 
 
   describe('convert', function () {
+
+    it('20.1% * 20 should return [0.201, *, 20]', function() {
+      var test_data = '20.1% * 20';
+      expect(happycalculator.convert(test_data)).to.deep.equal(['0.201', '*', '20']);
+    });
+
     it("20 * ( 10 + 20 ) / 20 should return ['20', '*', '(', '10', '+', '20', ')', '/', '20']", function () {
       var test_data = '20 * ( 10 + 20 ) / 20';
       expect(happycalculator.convert(test_data)).to.deep.equal(['20', '*', '(', '10', '+', '20', ')', '/', '20']);
@@ -162,6 +176,18 @@ describe('calculator', function () {
 
     });
 
+    it("20.1+1 should return 21.1", function() {
+      var test_data = '20.1+1';
+      expect(happycalculator.calculate(test_data)).to.equal(21.1);
+
+    });
+
+    it("20.1%+1 should return 1.201", function() {
+      var test_data = '20.1%+1';
+      expect(happycalculator.calculate(test_data)).to.equal(1.201);
+
+    });
+
     it("sqrt(sqrt(20)) should return 160000", function() {
       var test_data = 'sqrt(sqrt(20))';
       expect(happycalculator.calculate(test_data)).to.equal(160000);
@@ -186,9 +212,15 @@ describe('calculator', function () {
 
     });
 
-    it("custom(sqrt(2+2)) should throw error", function() {
+    it("custom(2+2) should throw error", function() {
       var test_data = 'custom(2+2)';
       expect(function(){happycalculator.calculate(test_data);}).to.throw(Error, 'unvalid expression');
+    });
+
+
+    it("20+ should throw error", function() {
+      var test_data = '20+';
+      expect(function(){happycalculator.calculate(test_data);}).to.throw(Error, 'error formula to convert please!');
     });
   });
 

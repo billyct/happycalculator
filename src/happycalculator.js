@@ -104,7 +104,8 @@ var Calculator = {
     while(postfixArray.length > 0) {
       cur = postfixArray.shift();
       if (!this.isOperator(cur)) {
-        cur = _.parseInt(cur);
+        //将parseInt 改成parseFloat 是为了解决小数不能计算的bug
+        cur = parseFloat(cur);
         if (_.isNaN(cur)) {
           throw new Error("unvalid expression");
         }
@@ -401,6 +402,15 @@ var Calculator = {
 
   },
 
+  verify: function(infix) {
+    //验证公式是否正确，也就是通过首个字符还有末个字符是否是operator
+    if(this.isOperator(infix[0]) || this.isOperator(infix[infix.length - 1])) {
+      return false;
+    }
+
+    return true;
+  },
+
   /**
    * 将字符串转化成数组
    * @param infix
@@ -408,11 +418,17 @@ var Calculator = {
    */
   convert: function(infix) {
     infix = infix.replace(/\s+/g, ''); // remove spaces, so infix[i]!=" "
+
+
+    if(!this.verify(infix)) {
+      throw new Error('error formula to convert please!');
+    }
+
     var infixArray = infix.split(/[\+\-\*\/]+/), //先把字符串里面的数据和符号区分开！没有运算符的数组
       result = [],
       temp = [],
       flag = 0,
-      i;
+      i, regPercent;
     for (i = 0; i < infixArray.length; i++) {
       //把括号修复一下，就是之前的切割会出来类似((cos(20)的字符串，其实应该是"(,(,(cos(20)"
       temp = temp.concat(this.fixBrackets(infixArray[i]));
@@ -428,6 +444,17 @@ var Calculator = {
     for (i = 0; i < temp.length; i++) {
       //需要解析公式函数，等到一个完整的表达式
       result = result.concat(this.fixFormulas(temp[i]));
+    }
+
+    for (i = 0; i < result.length; i++) {
+      //这里将百分号变成小数
+
+      regPercent = new RegExp('%$');
+      if (regPercent.test(result[i])) {
+        result[i] = parseFloat(result[i].replace(regPercent, '')) / 100;
+        result[i] += '';
+      }
+
     }
 
     return result;
@@ -515,7 +542,13 @@ var Calculator = {
    * @param formulas
    */
   addFormulas : function(formulas) {
-   this.formulas = _.assign(this.formulas, formulas);
+    /*jslint unparam: true*/
+    formulas = _.mapKeys(formulas, function(_, key) {
+      //这个将公式名称都空格过滤掉，这样可以避免在计算时候不能计算带空格的公式,比如公司名称是happy cal将变成happy_cal
+      return key.replace(/\s+/g, '_');
+    });
+    /*jslint unparam: false*/
+    this.formulas = _.assign(this.formulas, formulas);
   },
 
   /**
