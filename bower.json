@@ -1,7 +1,7 @@
 {
   "name": "happycalculator",
   "main": "src/happycalculator.js",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "homepage": "https://github.com/billyct/happycalculator",
   "authors": [
     "billyct <billy_allen@126.com>"
