@@ -14,8 +14,12 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
  * @type {object}
  */
 var Formulas = {
-  'sqrt' : '$1 * $1',
-  'add' : '$1 + $2'
+  'sqrt__custom' : '$1 * $1',
+  //'add' : '$1 + $2',
+  'sin' : 'SIN_$1',
+  'cos' : 'COS_$1',
+  'tan' : 'TAN_$1',
+  'sqrt' : 'SQRT_$1'
 };
 
 /****
@@ -189,6 +193,60 @@ var Calculator = {
   },
 
 
+  /**
+   * 看看这个str是不是公式的特殊表达式？
+   * @param str
+   * @returns {boolean}
+   */
+  mathVerified: function(str) {
+    var arr = str.split('_');
+    return this.formulas[arr[0].toLowerCase()] ? true: false;
+  },
+
+  /**
+   * 将公式的特殊表达式变成数字，这里不考虑多个参数的那种
+   * @param str
+   * @returns {*}
+   */
+  mathConvert: function(str) {
+
+    //如果是多个参数的话，通过_来切割的
+    var arr = str.split('_'),
+      result, number;
+
+    //这里并不考虑多个参数的
+    number = this.calculate(arr[1]); //这个nest 令我觉得好有趣 ：），☺️！！！！！！！
+
+    if(_.isNaN(number)) {
+      throw new Error("unvalid number for formula special");
+    }
+
+    switch(arr[0]) {
+      case 'TAN' :
+        number = Math.PI*2/360*number; //弧度计算
+        result = Math.tan(number);
+        break;
+      case 'SIN' :
+        number = Math.PI*2/360*number;
+        result = Math.sin(number);
+        break;
+      case 'COS' :
+        number = Math.PI*2/360*number;
+        result = Math.cos(number);
+        break;
+      case 'SQRT':
+        result = Math.sqrt(number);
+        break;
+    }
+
+
+    //这里保留5个精度 @todo 是否其他的最大精度也是5？
+    return parseFloat(result.toFixed(5));
+
+
+  },
+
+
   /***
    * 计算后缀法的公式,并返回整个计算结果
    * @param infix
@@ -198,17 +256,23 @@ var Calculator = {
   calculate : function(infix) {
     var postfixArray = this.shunt(infix),
       outputStack = [],
-      cur, fir, sec;
+      cur, fir, sec, cur__temp;
+
 
     while(postfixArray.length > 0) {
       cur = postfixArray.shift();
       if (!this.isOperator(cur)) {
         //将parseInt 改成parseFloat 是为了解决小数不能计算的bug
-        cur = parseFloat(cur);
-        if (_.isNaN(cur)) {
-          throw new Error("unvalid expression");
+        cur__temp = parseFloat(cur);
+        if (_.isNaN(cur__temp)) {
+
+          if(!this.mathVerified(cur)) {
+            throw new Error("unvalid string for calculate");
+          }
+          //如果这里是TAN,COS,这种开头的，就需要转化一下，
+          cur__temp = this.mathConvert(cur);
         }
-        outputStack.push(cur);
+        outputStack.push(cur__temp);
       } else {
         if (outputStack.length < 2) {
           throw new Error('unvalid stack length');
@@ -382,6 +446,7 @@ var Calculator = {
             for (i = 0; i < args.length; i++) {
               //函数的定义格式是$1为第一个参数,$2为第二个参数以此类推
               reg = new RegExp('\\$' + (i + 1), 'g');
+
               //这里优先级可能会有问题，所以得加一个括号，这个如果是无用的括号，在后面的convert中会消除掉
               formulaValue = formulaValue.replace(reg, '(' + args[i] + ')');
 

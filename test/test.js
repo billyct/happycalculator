@@ -49,28 +49,28 @@ describe('calculator', function () {
     });
 
 
-    it("sqrt(20) should return ['(', '20', '*', '20', ')']", function() {
-      var test_data = 'sqrt(20)';
+    it("sqrt__custom(20) should return ['(', '20', '*', '20', ')']", function() {
+      var test_data = 'sqrt__custom(20)';
       expect(happycalculator.fixFormulas(test_data)).to.deep.equal(['(', '20', '*', '20', ')']);
     });
 
-    it("sqrt(20 + 20) should return ['(', '20', '*', '20', ')']", function() {
-      var test_data = 'sqrt(20+20)';
+    it("sqrt__custom(20 + 20) should return ['(', '20', '*', '20', ')']", function() {
+      var test_data = 'sqrt__custom(20+20)';
       expect(happycalculator.fixFormulas(test_data)).to.deep.equal(['(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')']);
 
     });
 
-    it("sqrt(sqrt(20)) should return ['(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']", function() {
-      var test_data = 'sqrt(sqrt(20))';
+    it("sqrt__custom(sqrt__custom(20)) should return ['(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']", function() {
+      var test_data = 'sqrt__custom(sqrt__custom(20))';
       expect(happycalculator.fixFormulas(test_data)).to.deep.equal(['(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']);
 
     });
 
-    it("sqrt(20) should return ['(', '20', '+', '20', ')']", function() {
+    it("sqrt__custom(20) should return ['(', '20', '+', '20', ')']", function() {
       happycalculator.addFormulas({
-        'sqrt': '$1 + $1'
+        'sqrt__custom': '$1 + $1'
       });
-      var test_data = 'sqrt(20)';
+      var test_data = 'sqrt__custom(20)';
       expect(happycalculator.fixFormulas(test_data)).to.deep.equal(['(', '20', '+', '20', ')']);
 
     });
@@ -96,24 +96,24 @@ describe('calculator', function () {
   });
 
   describe('fixFormulasLoop', function() {
-    it("[ 'sqrt(sqrt(2', ')', ')' ] should return ['sqrt(sqrt(2))']", function() {
-      var test_data = [ 'sqrt(sqrt(2', ')', ')' ];
-      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt(sqrt(2))']);
+    it("[ 'sqrt__custom(sqrt__custom(2', ')', ')' ] should return ['sqrt__custom(sqrt__custom(2))']", function() {
+      var test_data = [ 'sqrt__custom(sqrt__custom(2', ')', ')' ];
+      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt__custom(sqrt__custom(2))']);
 
     });
-    it("[ 'sqrt(2', '+', '2', ')' ] should return ['sqrt(2+2)']", function() {
-      var test_data = [ 'sqrt(2', '+', '2', ')' ];
-      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt(2+2)']);
+    it("[ 'sqrt__custom(2', '+', '2', ')' ] should return ['sqrt__custom(2+2)']", function() {
+      var test_data = [ 'sqrt__custom(2', '+', '2', ')' ];
+      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt__custom(2+2)']);
 
     });
-    it("[ 'sqrt(sqrt(2', '+', '2', ')', ')' ] should return ['sqrt(sqrt(2+2))']", function() {
-      var test_data = [ 'sqrt(sqrt(2', '+', '2', ')', ')' ];
-      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt(sqrt(2+2))']);
+    it("[ 'sqrt__custom(sqrt__custom(2', '+', '2', ')', ')' ] should return ['sqrt__custom(sqrt__custom(2+2))']", function() {
+      var test_data = [ 'sqrt__custom(sqrt__custom(2', '+', '2', ')', ')' ];
+      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt__custom(sqrt__custom(2+2))']);
     });
 
-    it("[ 'sqrt(sqrt(2', '+', '2', ')', ')' ] should return ['sqrt(sqrt(sqrt(2+2)))']", function() {
-      var test_data = [ 'sqrt(sqrt(sqrt(2', '+', '2', ')', ')', ')' ];
-      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt(sqrt(sqrt(2+2)))']);
+    it("[ 'sqrt__custom(sqrt__custom(2', '+', '2', ')', ')' ] should return ['sqrt__custom(sqrt__custom(sqrt__custom(2+2)))']", function() {
+      var test_data = [ 'sqrt__custom(sqrt__custom(sqrt__custom(2', '+', '2', ')', ')', ')' ];
+      expect(happycalculator.fixFormulasLoop(test_data)).to.deep.equal(['sqrt__custom(sqrt__custom(sqrt__custom(2+2)))']);
     });
   });
 
@@ -131,28 +131,28 @@ describe('calculator', function () {
 
     });
 
-    it("20 * ( 10 + 20 ) / sqrt(20) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '20', '*', '20', ')']", function() {
-      var test_data = '20 * ( 10 + 20 ) / sqrt(20)';
+    it("20 * ( 10 + 20 ) / sqrt__custom(20) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '20', '*', '20', ')']", function() {
+      var test_data = '20 * ( 10 + 20 ) / sqrt__custom(20)';
       expect(happycalculator.convert(test_data)).to.deep.equal(['20', '*', '(', '10', '+', '20', ')', '/', '(', '20', '*', '20', ')']);
 
     });
 
 
-    it("20 * ( 10 + 20 ) / sqrt(20 + 20) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')']", function() {
-      var test_data = '20 * ( 10 + 20 ) / sqrt(20 + 20)';
+    it("20 * ( 10 + 20 ) / sqrt__custom(20 + 20) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')']", function() {
+      var test_data = '20 * ( 10 + 20 ) / sqrt__custom(20 + 20)';
       expect(happycalculator.convert(test_data)).to.deep.equal(['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')']);
 
     });
 
 
-    it("20 * ( 10 + 20 ) / sqrt(sqrt(20)) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']", function() {
-      var test_data = '20 * ( 10 + 20 ) / sqrt(sqrt(20))';
+    it("20 * ( 10 + 20 ) / sqrt__custom(sqrt__custom(20)) should return ['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']", function() {
+      var test_data = '20 * ( 10 + 20 ) / sqrt__custom(sqrt__custom(20))';
       expect(happycalculator.convert(test_data)).to.deep.equal(['20', '*', '(', '10', '+', '20', ')', '/', '(', '(', '20', '*', '20', ')', '*', '(', '20', '*', '20', ')', ')']);
 
     });
 
-    it("sqrt(sqrt(20+20)) should return right", function() {
-      var test_data = 'sqrt(sqrt(20+20))';
+    it("sqrt__custom(sqrt__custom(20+20)) should return right", function() {
+      var test_data = 'sqrt__custom(sqrt__custom(20+20))';
       expect(happycalculator.convert(test_data)).to.deep.equal(['(', '(', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')', ')', '*', '(', '(', '(', '20', '+', '20', ')', '*', '(', '20', '+', '20', ')', ')', ')', ')']);
 
       //((((20+20)*(20+20)))*(((20+20)*(20+20))))
@@ -187,33 +187,33 @@ describe('calculator', function () {
 
     });
 
-    it("sqrt(sqrt(20)) should return 160000", function() {
-      var test_data = 'sqrt(sqrt(20))';
+    it("sqrt__custom(sqrt__custom(20)) should return 160000", function() {
+      var test_data = 'sqrt__custom(sqrt__custom(20))';
       expect(happycalculator.calculate(test_data)).to.equal(160000);
     });
 
 
-    it("sqrt(20+20) should return 1600", function() {
-      var test_data = 'sqrt(20+20)';
+    it("sqrt__custom(20+20) should return 1600", function() {
+      var test_data = 'sqrt__custom(20+20)';
       expect(happycalculator.calculate(test_data)).to.equal(1600);
     });
 
 
-    it("sqrt(20+20) + sqrt(20+20) should return 3200", function() {
-      var test_data = 'sqrt(20+20) + sqrt(20+20)';
+    it("sqrt__custom(20+20) + sqrt__custom(20+20) should return 3200", function() {
+      var test_data = 'sqrt__custom(20+20) + sqrt__custom(20+20)';
       expect(happycalculator.calculate(test_data)).to.equal(3200);
 
     });
 
-    it("sqrt(sqrt(2+2)) should return 256", function() {
-      var test_data = 'sqrt(sqrt(2+2))';
+    it("sqrt__custom(sqrt__custom(2+2)) should return 256", function() {
+      var test_data = 'sqrt__custom(sqrt__custom(2+2))';
       expect(happycalculator.calculate(test_data)).to.equal(256);
 
     });
 
     it("custom(2+2) should throw error", function() {
       var test_data = 'custom(2+2)';
-      expect(function(){happycalculator.calculate(test_data);}).to.throw(Error, 'unvalid expression');
+      expect(function(){happycalculator.calculate(test_data);}).to.throw(Error, 'unvalid string for calculate');
     });
 
 
@@ -225,6 +225,28 @@ describe('calculator', function () {
 
     it("0.1+0.2 should return 0.3", function() {
       var test_data = '0.1+0.2';
+      expect(happycalculator.calculate(test_data)).to.equal(0.3);
+    });
+
+
+    it("sin(30) should return 0.5", function() {
+      var test_data = 'sin(30)';
+      expect(happycalculator.calculate(test_data)).to.equal(0.5);
+    });
+
+    it("cos(60) should return 0.5", function() {
+      var test_data = 'cos(60)';
+      expect(happycalculator.calculate(test_data)).to.equal(0.5);
+    });
+
+    it("cos(60+30) should return 0", function() {
+      var test_data = 'cos(90+cos(90))';
+      expect(happycalculator.calculate(test_data)).to.equal(0);
+    });
+
+
+    it("sqrt(0.0009) should return 0.03", function() {
+      var test_data = 'sqrt(0.09)';
       expect(happycalculator.calculate(test_data)).to.equal(0.3);
     });
 
