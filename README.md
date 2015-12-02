@@ -35,27 +35,35 @@ happycalculator.calculate(formula);
 ```
 ###advance
 ```js
-happycalculator.calculate(sqrt(10)*20/20);
+//sqrt__custom is default seted to '$1*$2'
+
+happycalculator.calculate('sqrt__custom(10)*20/20');
 //output 100
 
-happycalculator.addFormulas({'sqrt' : '$1 + $1'});
-happycalculator.calculate(sqrt(10)*20/20);
+happycalculator.addFormulas({'sqrt__custom' : '$1 + $1'}); //
+happycalculator.calculate('sqrt__custom(10)*20/20');
 //output 20
-happycalculator.calculate(sqrt(sqrt(10))*20/20);
+happycalculator.calculate(sqrt__custom('sqrt__custom(10))*20/20');
 //output 40
-happycalculator.removeFormulas();
-happycalculator.calculate(sqrt(10)*20/20);
-//output 20
+happycalculator.removeFormulas(); //remove formulas added,and reset the formulas default
+happycalculator.calculate('sqrt__custom(10)*20/20');
+//output 100
 
 happycalculator.addFormulas({'custom' : '$1 + $2 +$3'});
-happycalculator.calculate(custom(10, 20, 30))
+happycalculator.calculate('custom(10, 20, 30)')
 //output 60
 
 //support formulas loop
-happycalculator.calculate(sqrt(sqrt(10)));
+happycalculator.calculate('sqrt__custom(sqrt__custom(10))');
 //output 10000
-happycalculator.calculate(sqrt(sqrt(2+2)));
+happycalculator.calculate('sqrt__custom(sqrt__custom(2+2))');
 //output 256
+
+
+//support sin,cos,tan,sqrt which was Math functions
+happycalculator.calculate('sin(30)');
+//output 0.5
+
 ```
 
 ####support simple code
