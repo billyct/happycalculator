@@ -9,7 +9,7 @@ calculator for natural formula like "1+2+3" for result 6,support custom function
 
 [中文](https://github.com/billyct/happycalculator/blob/master/readme_zh.md)
 
-##Install
+## Install
 
 
 ``` $ npm install --save happycalculator ```
@@ -20,8 +20,8 @@ or bower
 
 ``` $ bower install --save happycalculator ``` and it will apply happycalculator global to you
 
-##Usage
-###base
+## Usage
+### base
 
 ```js
 var happycalculator = require('happycalculator');
@@ -33,7 +33,7 @@ happycalculator.shunt(formula);
 happycalculator.calculate(formula);
 //output: 30
 ```
-###advance
+### advance
 ```js
 //sqrt__custom is default seted to '$1*$2'
 
@@ -66,7 +66,7 @@ happycalculator.calculate('sin(30)');
 
 ```
 
-####support simple code
+#### support simple code
 ```js
 var code = `sum = $1 + $2;
 a = 2;
@@ -81,31 +81,31 @@ calculator.calculateCode(code);
 ```
 and that's all simple code support right now
 
-##API
-###convert(string_infix)
+## API
+### convert(string_infix)
 return an array that split with "+-*/",and if the string with values(example:a,ab,cos(20)) also that will be ok
 
-###shunt(string_infix)
+### shunt(string_infix)
 return an array postinfx that with the [Shunting-yard Algorithm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) converted,the core code was written from [rosettacode](https://rosettacode.org/wiki/Parsing/Shunting-yard_algorithm#JavaScript) and i change some code for the project
 
-###calculate(string_infix)
+### calculate(string_infix)
 return the num calculated
 
-###addFormulas(formulas)
+### addFormulas(formulas)
 add custom formulas to the calculator,and the formula rule is looks like that{'key' => '$1+$2+$3'},key(1,2,3),default formula function has sqrt:'$1*$1' right now,its working on
 
-###removeFormulas()
+### removeFormulas()
 remove all custom formulas you add in and defaults to the default project supported formulas
 
-###parse(string_code)
+### parse(string_code)
 return array of string_code parsed
 
 
-###calculateCode(string_code)
+### calculateCode(string_code)
 return array of the result calculated by the string_code parsed 
 
 
 
 
-##License
+## License
 MIT © billyct
